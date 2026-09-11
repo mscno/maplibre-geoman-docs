@@ -13,11 +13,12 @@ Handlers are scoped to the map container and ignore events that originate from f
 
 ```typescript
 // Editor keyboard actions that can be bound to key combinations.
-type KeyboardAction = 'undo' | 'redo' | 'deleteSelected' | 'cancel';
+type KeyboardAction = 'undo' | 'redo' | 'deleteSelected' | 'cancel' | 'nudge' | 'finishShape';
 
 interface KeyboardSettings {
   enabled: boolean;                        // default: true
-  bindings: Record<KeyboardAction, string[]>;
+  bindings: Partial<Record<KeyboardAction, string[]>>;
+  nudgeStepPx: number;                     // default: 2
 }
 ```
 
@@ -29,6 +30,8 @@ interface KeyboardSettings {
 | `redo` | `['mod+shift+z', 'mod+y']` | Redo the last undone transaction. |
 | `deleteSelected` | `['Delete', 'Backspace']` | Delete the currently selected features. |
 | `cancel` | `['Escape']` | Cancel the current draw/edit operation. |
+| `nudge` | Arrow keys, with optional Shift | Move selection 2 pixels; Shift multiplies by 10. |
+| `finishShape` | `['Enter']` | Complete a valid in-progress line/polygon. |
 
 ## Binding syntax
 

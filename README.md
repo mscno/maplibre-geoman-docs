@@ -39,3 +39,9 @@ pnpm build
 ```
 
 Generates static content into the `build` directory.
+
+## Geoman Pro 0.11
+
+Embedded demos use Geoman Pro 0.11.0 and MapLibre GL JS 6.7.0.
+The prebuild/prestart hook copies both MapLibre module-worker files into
+static assets; worker URLs respect the Docusaurus base URL.

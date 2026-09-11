@@ -317,3 +317,13 @@ gm.disableAllModes();
 - `geofencing`: Geofencing mode
 - `zoom_to_features`: Zoom to features
 - `click_to_edit`: Click to edit mode
+
+## Editor-platform APIs (Pro 0.11)
+
+- `gm.dataLayers`: [named layers, styles and schemas](/data-layers).
+- `gm.edit`: [undoable programmatic editing and geometry utilities](/programmatic-editing).
+- `gm.geofencing`: [live containment and keep-out constraints](/helper-modes/helper-geofencing).
+- [Accessibility and localisation](/accessibility).
+- [0.11 migration and full release notes](/release-0.11).
+
+The lifecycle emits `gm:unloaded` when Geoman is destroyed.

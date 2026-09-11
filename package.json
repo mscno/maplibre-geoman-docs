@@ -13,19 +13,21 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prebuild": "node scripts/copy-maplibre-worker.mjs",
+    "prestart": "node scripts/copy-maplibre-worker.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
     "@docusaurus/preset-classic": "^3.10.1",
     "@docusaurus/theme-common": "^3.10.1",
-    "@geoman-io/mapbox-geoman-pro": "0.9.0",
-    "@geoman-io/maplibre-geoman-pro": "0.9.0",
+    "@geoman-io/mapbox-geoman-pro": "0.11.0",
+    "@geoman-io/maplibre-geoman-pro": "0.11.0",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
     "lodash-es": "^4.18.1",
     "mapbox-gl": "^3.25.0",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.7.0",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

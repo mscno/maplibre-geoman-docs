@@ -116,3 +116,18 @@ import features from '../../src/components/examples/geojson/basic-edit.json';
   features={features} />
 
 <IntegrationHelpCallout />
+
+## Public API (Pro 0.11)
+
+```typescript
+gm.geofencing.setContainment(boundaryFeatureIds);
+gm.geofencing.setIntersectionRestriction(keepOutFeatureIds);
+gm.geofencing.getContainment();
+gm.geofencing.getIntersectionRestriction();
+gm.geofencing.clear();
+```
+
+Setters replace the constraint set and enable the helper. IDs resolve to live
+features, so editing a boundary changes the constraint. Rejected edits emit
+`gm:geofencing_violation`; `event.action` identifies containment or intersection
+violation. Use this façade instead of reaching into `actionInstances`.
