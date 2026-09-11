@@ -11,10 +11,17 @@ Geoman provides a rich event system that allows you to listen to various interac
 
 ### Individual Event Listening
 
-You can listen to specific events using the map's `on` method:
+With MapLibre GL JS 6, subscribe through `geoman.mapAdapter` for typed
+`gm:*` events. MapLibre's native event-name overloads cover its own events.
+The raw map event API still works at runtime, but TypeScript callers should use
+this adapter rather than casting custom event names to native MapLibre names.
+The examples below assume an initialized `geoman` instance.
+
+
+You can listen to specific events using the Geoman map adapter's typed `on` method:
 
 ```typescript
-map.on('gm:create', (event) => {
+geoman.mapAdapter.on('gm:create', (event) => {
   console.log('Feature created:', event);
 });
 ```
@@ -24,9 +31,7 @@ map.on('gm:create', (event) => {
 To listen to all Geoman events, use the global events listener:
 
 ```typescript
-import type { GmSystemEvent, GmEvent } from '@geoman-io/maplibre-geoman-free'; // or '@geoman-io/maplibre-geoman-pro', '@geoman-io/mapbox-geoman-free', '@geoman-io/mapbox-geoman-pro'
-
-geoman.setGlobalEventsListener((event: GmSystemEvent | GmEvent) => {
+geoman.setGlobalEventsListener((event) => {
   console.log('Event:', event);
 });
 
@@ -42,37 +47,37 @@ These events fire when different modes are toggled on/off:
 
 ```typescript
 // Drawing mode
-map.on('gm:globaldrawmodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globaldrawmodetoggled', (event) => {
   console.log('Draw mode toggled:', event.enabled);
 });
 
 // Edit mode
-map.on('gm:globaleditmodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globaleditmodetoggled', (event) => {
   console.log('Edit mode toggled:', event.enabled);
 });
 
 // Remove mode
-map.on('gm:globalremovemodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globaldeletemodetoggled', (event) => {
   console.log('Remove mode toggled:', event.enabled);
 });
 
 // Rotate mode
-map.on('gm:globalrotatemodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globalrotatemodetoggled', (event) => {
   console.log('Rotate mode toggled:', event.enabled);
 });
 
 // Drag mode
-map.on('gm:globaldragmodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globaldragmodetoggled', (event) => {
   console.log('Drag mode toggled:', event.enabled);
 });
 
 // Cut mode
-map.on('gm:globalcutmodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globalcutmodetoggled', (event) => {
   console.log('Cut mode toggled:', event.enabled);
 });
 
 // Snapping mode
-map.on('gm:globalsnappingmodetoggled', (event) => {
+geoman.mapAdapter.on('gm:globalsnappingmodetoggled', (event) => {
   console.log('Snapping mode toggled:', event.enabled);
 });
 ```
@@ -83,12 +88,10 @@ Events related to drawing features:
 
 ```typescript
 // Listen to all draw events
-map.on('_gm:draw', (event: GmDrawEvent) => {
-  console.log('Draw event:', event);
-});
+// Use setGlobalEventsListener() for internal drawing notifications.
 
 // Feature creation
-map.on('gm:create', (event: FeatureCreatedFwdEvent) => {
+geoman.mapAdapter.on('gm:create', (event: FeatureCreatedFwdEvent) => {
   console.log('Feature created:', event);
 });
 ```
@@ -99,17 +102,15 @@ Events related to editing features:
 
 ```typescript
 // Listen to all edit events
-map.on('_gm:edit', (event: GmEditEvent) => {
-  console.log('Edit event:', event);
-});
+// Use setGlobalEventsListener() for internal editing notifications.
 
 // Edit start
-map.on('gm:editstart', (event: FeatureEditStartFwdEvent) => {
+geoman.mapAdapter.on('gm:editstart', (event: FeatureEditStartFwdEvent) => {
   console.log('Edit started:', event);
 });
 
 // Edit end
-map.on('gm:editend', (event: FeatureEditEndFwdEvent) => {
+geoman.mapAdapter.on('gm:editend', (event: FeatureEditEndFwdEvent) => {
   console.log('Edit ended:', event);
 });
 ```
@@ -119,7 +120,7 @@ map.on('gm:editend', (event: FeatureEditEndFwdEvent) => {
 Events for feature removal:
 
 ```typescript
-map.on('gm:remove', (event: FeatureRemovedFwdEvent) => {
+geoman.mapAdapter.on('gm:remove', (event: FeatureRemovedFwdEvent) => {
   console.log('Feature removed:', event);
 });
 ```
@@ -130,17 +131,17 @@ Events for rotating features:
 
 ```typescript
 // Listen to all rotate events
-map.on('gm:rotate', (event: FeatureUpdatedFwdEvent) => {
+geoman.mapAdapter.on('gm:rotate', (event: FeatureUpdatedFwdEvent) => {
   console.log('Rotate event:', event);
 });
 
 // Rotation start
-map.on('gm:rotatestart', (event: FeatureEditStartFwdEvent) => {
+geoman.mapAdapter.on('gm:rotatestart', (event: FeatureEditStartFwdEvent) => {
   console.log('Rotation started:', event);
 });
 
 // Rotation end
-map.on('gm:rotateend', (event: FeatureEditEndFwdEvent) => {
+geoman.mapAdapter.on('gm:rotateend', (event: FeatureEditEndFwdEvent) => {
   console.log('Rotation ended:', event);
 });
 ```
@@ -151,17 +152,17 @@ Events for dragging features:
 
 ```typescript
 // Listen to all drag events
-map.on('gm:drag', (event: FeatureUpdatedFwdEvent) => {
+geoman.mapAdapter.on('gm:drag', (event: FeatureUpdatedFwdEvent) => {
   console.log('Drag event:', event);
 });
 
 // Drag start
-map.on('gm:dragstart', (event: FeatureEditStartFwdEvent) => {
+geoman.mapAdapter.on('gm:dragstart', (event: FeatureEditStartFwdEvent) => {
   console.log('Drag started:', event);
 });
 
 // Drag end
-map.on('gm:dragend', (event: FeatureEditEndFwdEvent) => {
+geoman.mapAdapter.on('gm:dragend', (event: FeatureEditEndFwdEvent) => {
   console.log('Drag ended:', event);
 });
 ```
@@ -171,133 +172,72 @@ map.on('gm:dragend', (event: FeatureEditEndFwdEvent) => {
 Events for cutting features:
 
 ```typescript
-map.on('gm:cut', (event: FeatureUpdatedFwdEvent) => {
+geoman.mapAdapter.on('gm:cut', (event: FeatureUpdatedFwdEvent) => {
   console.log('Feature cut:', event);
 });
 ```
 
 ### Helper Events
 
-Events related to helper functionality:
-
-```typescript
-map.on('_gm:helper', (event: GmHelperEvent) => {
-  console.log('Helper event:', event);
-});
-```
+Use `gm:globalsnappingmodetoggled` for snapping and
+`gm:geofencing_violation` for rejected containment/keep-out edits. Internal
+helper notifications are available through the global listener; avoid relying
+on private `_gm:*` names.
 
 ### Control Events
 
-Events related to control interactions:
-
-```typescript
-map.on('_gm:control', (event: GmControlEvent) => {
-  console.log('Control event:', event);
-});
-```
+The global listener includes control notifications as well as draw, edit, and
+helper events. Register one global listener and route the notifications in your
+application; calling `setGlobalEventsListener()` again replaces it.
 
 ## Complete Example
 
-Here's a complete example showing how to set up event listeners:
+This Vite example bundles MapLibre 6's module worker. See [Basics](/basics) for
+other bundlers and self-hosted worker assets.
 
 ```typescript
-import { Geoman, type GmOptionsPartial } from '@geoman-io/maplibre-geoman-free';
-import type { GmSystemEvent, GmEvent } from '@geoman-io/maplibre-geoman-free';
-// swap to '@geoman-io/mapbox-geoman-free' or '@geoman-io/mapbox-geoman-pro' for Mapbox
+import * as maplibregl from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import { Geoman } from '@geoman-io/maplibre-geoman-pro';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import '@geoman-io/maplibre-geoman-pro/dist/maplibre-geoman.css';
 
-// Initialize map and Geoman
+maplibregl.setWorkerUrl(workerUrl);
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'your-style-url'
+  style: 'your-style-url',
 });
+const geoman = new Geoman(map);
 
-const options: GmOptionsPartial = {
-  // configuration options
-  // see Configuring Geoman section for more details
-};
-
-const gm = new Geoman(map,options);
-
-// Wait for Geoman to load
-map.once('gm:loaded', () => {
+geoman.mapAdapter.once('gm:loaded', () => {
   console.log('Geoman loaded');
-  
-  // Set up event listeners
-  
-  // Mode events
-  map.on('gm:globaldrawmodetoggled', handleEvent);
-  map.on('gm:globaleditmodetoggled', handleEvent);
-  map.on('gm:globalremovemodetoggled', handleEvent);
-  map.on('gm:globalrotatemodetoggled', handleEvent);
-  map.on('gm:globaldragmodetoggled', handleEvent);
-  map.on('gm:globalcutmodetoggled', handleEvent);
-  map.on('gm:globalsnappingmodetoggled', handleEvent);
-
-  // Drawing events
-  map.on('gm:create', handleEvent);
-
-  // Edit events
-  map.on('gm:editstart', handleEvent);
-  map.on('gm:editend', handleEvent);
-
-  // Remove events
-  map.on('gm:remove', handleEvent);
-
-  // Rotate events
-  map.on('gm:rotatestart', handleEvent);
-  map.on('gm:rotateend', handleEvent);
-
-  // Drag events
-  map.on('gm:dragstart', handleEvent);
-  map.on('gm:dragend', handleEvent);
-
-  // Cut events
-  map.on('gm:cut', handleEvent);
-
-  // Helper and control events
-  map.on('_gm:helper', handleEvent);
-  map.on('_gm:control', handleEvent);
 });
-
-// Store events history
-const gmEvents: Array<any> = [];
-
-// Helper function to safely extract GeoJSON from feature data
-const getGeoJson = (featureData: any) => {
-  try {
-    return JSON.stringify(featureData.getGeoJson(), null, 2);
-  } catch (e) {
-    return 'Can\'t retrieve GeoJSON';
-  }
-};
-
-// Comprehensive event handler that extracts and stores relevant information
-const handleEvent = (event: any) => {
-  console.log('Event', event);
-
-  // Extract and store important event data
-  // Customize this to your needs
-  gmEvents.push({
-    // Feature ID if available
-    id: event?.feature?.id ?? undefined,
-    // Mode state for toggle events
-    enabled: event?.enabled ?? undefined,
-    // Timestamp for event tracking
-    timestamp: new Date().toLocaleTimeString(),
-    // Event type (create, edit, etc.)
-    type: event?.type,
-    // Shape type if available
-    shape: event?.shape ?? undefined,
-    // GeoJSON data if a feature is involved
-    geojson: event?.feature ? getGeoJson(event.feature) : undefined,
-  });
-};
-
-// Optional: Global event listener
-gm.setGlobalEventsListener((event: GmSystemEvent | GmEvent) => {
-  console.log('Event:', event);
+geoman.mapAdapter.on('gm:create', (event) => {
+  console.log('Created feature:', event.feature);
+});
+geoman.mapAdapter.on('gm:editend', (event) => {
+  console.log('Committed edit:', event.feature);
+});
+geoman.setGlobalEventsListener((notification) => {
+  console.log('Global notification:', notification);
 });
 ```
+
+### Pro 0.11 lifecycle and compound edits
+
+- `gm:unloaded` fires when Geoman is destroyed.
+- `gm:geofencing_violation` exposes containment and intersection violations;
+  `event.action` identifies the violation.
+- In-place programmatic operations on `geoman.edit` emit `gm:edit`, then
+  `gm:editend`, so the same persistence handler can cover interactive edits.
+- `gm:explode`, `gm:merge_parts`, and `gm:split` always carry
+  `originalFeatures` and `features` arrays. They accompany granular
+  create/remove events: choose one persistence channel to avoid counting an
+  operation twice. Set `settings.compoundLineageEvents: false` for a
+  granular-only stream.
+- Multi-feature events honor `awaitDataUpdatesOnEvents` for every affected
+  source. Errors thrown by one host listener are isolated from sibling
+  listeners.
 
 ## Event Handler Details
 
@@ -386,7 +326,7 @@ const editHandlers = {
 
 2. **Error Handling**: Always include error handling in event listeners
 ```typescript
-map.on('gm:create', (event) => {
+geoman.mapAdapter.on('gm:create', (event) => {
   try {
     // Process event
   } catch (error) {
@@ -398,10 +338,10 @@ map.on('gm:create', (event) => {
 3. **Cleanup**: Remove event listeners when they're no longer needed
 ```typescript
 const handler = (event) => { /* ... */ };
-map.on('gm:create', handler);
+geoman.mapAdapter.on('gm:create', handler);
 
 // Later...
-map.off('gm:create', handler);
+geoman.mapAdapter.off('gm:create', handler);
 ```
 
 4. **Performance**: Be mindful of performance in high-frequency events
@@ -412,5 +352,5 @@ const debouncedHandler = debounce((event) => {
   // Process event...
 }, 100);
 
-map.on('gm:drag', debouncedHandler);
+geoman.mapAdapter.on('gm:drag', debouncedHandler);
 ```
