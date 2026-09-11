@@ -50,7 +50,7 @@ const Component: React.FC<ComponentProps> = ({
       merge(gmOptions, gmOptionsOverride);
 
       const geoman = new Geoman(map, gmOptions);
-      map.on(`gm:loaded`, () => {
+      geoman.mapAdapter.on(`gm:loaded`, () => {
         features?.forEach((feature) => {
           geoman.features.importGeoJsonFeature(feature);
         });

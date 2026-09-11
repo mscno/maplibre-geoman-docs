@@ -100,11 +100,24 @@ Once these variables are set, Vercel will use the correct .npmrc configuration a
 
 ## MapLibre and Geoman initialization
 
+Pro 0.11 requires MapLibre GL JS 6 (`>=6.0.0 <7.0.0`) and ESM imports.
+Configure the worker **before** creating a map. The example below uses Vite's
+`?url` asset import. For Next.js, Angular, or Webpack-based sites, copy both
+`maplibre-gl-worker.mjs` and `maplibre-gl-shared.mjs` from the installed package's
+`dist` directory into the same public asset directory. Then use
+`ml.setWorkerUrl('/vendor/maplibre/maplibre-gl-worker.mjs')`, including your
+deployment's base path where needed. Keep both files in sync with the installed
+MapLibre version; the worker imports the shared module using a relative URL.
+MapLibre 6 has no default export or UMD bundle.
+
+
 ```typescript
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@geoman-io/maplibre-geoman-free/dist/maplibre-geoman.css';
 
-import ml from 'maplibre-gl';
+import * as ml from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+ml.setWorkerUrl(workerUrl);
 import { Geoman, type GmOptionsPartial } from '@geoman-io/maplibre-geoman-free'; // or '@geoman-io/maplibre-geoman-pro'
 
 const mapLibreStyle: ml.StyleSpecification = {
@@ -146,7 +159,7 @@ const gmOptions: GmOptionsPartial = {
 const geoman = new Geoman(map, gmOptions);
 
 // callback when geoman is fully loaded
-map.on('gm:loaded', () => {
+geoman.mapAdapter.on('gm:loaded', () => {
   console.log('Geoman fully loaded');
 
   // Here you can add your geojson shapes for example
@@ -216,7 +229,7 @@ const gmOptions: GmOptionsPartial = {
 
 const geoman = new Geoman(map, gmOptions);
 
-map.on('gm:loaded', () => {
+geoman.mapAdapter.on('gm:loaded', () => {
   console.log('Geoman fully loaded');
 });
 ```

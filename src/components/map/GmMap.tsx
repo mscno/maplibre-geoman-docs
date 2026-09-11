@@ -1,10 +1,12 @@
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import { type GeoJsonImportFeature, Geoman, type GmOptionsData } from '@geoman-io/maplibre-geoman-pro';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@geoman-io/maplibre-geoman-pro/dist/maplibre-geoman.css';
 import { getDisabledByDefaultOptions } from '@site/src/components/map/default-options';
 import mapLibreStyle from '@site/src/components/map/map-libre-style';
 import { merge } from 'lodash-es';
-import ml, { type MapOptions } from 'maplibre-gl';
+import * as ml from 'maplibre-gl';
+import type { MapOptions } from 'maplibre-gl';
 import React, { useEffect, useRef } from 'react';
 import type { PartialDeep } from 'type-fest';
 
@@ -18,6 +20,7 @@ const Component: React.FC<ComponentProps> = ({
   gmOptions: gmOptionsOverride,
   features,
 }) => {
+  const workerUrl = useBaseUrl('/vendor/maplibre/maplibre-gl-worker.mjs');
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<ml.Map & { gm: Geoman } | null>(null);
 
@@ -31,13 +34,15 @@ const Component: React.FC<ComponentProps> = ({
         fadeDuration: 50,
       };
 
+      ml.setWorkerUrl(workerUrl);
+
       const map = new ml.Map(mapOptions) as ml.Map & { gm: Geoman };
 
       const gmOptions = getDisabledByDefaultOptions();
       merge(gmOptions, gmOptionsOverride);
 
       const geoman = new Geoman(map, gmOptions);
-      map.on(`gm:loaded`, () => {
+      geoman.mapAdapter.on(`gm:loaded`, () => {
         features?.forEach((feature) => {
           geoman.features.importGeoJsonFeature(feature);
         });

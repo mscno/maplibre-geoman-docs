@@ -1,11 +1,13 @@
+minimumReleaseAge: 10080
+
 # pnpm 10+ reads project config (overrides, patches, build policy, supply-chain
 # cooldown) from this file rather than package.json's "pnpm" field. The repo pins
 # packageManager: pnpm@11 so Vercel/corepack use a pnpm that honors it.
 
 # Supply-chain "cooldown": pnpm blocks installing versions published within the
-# last 24h. We keep it enabled and exclude only @geoman-io, because we
-# intentionally track the brand-new geoman alpha. Every other dependency is
-# resolved to a cooldown-compliant (>24h-old) version, so no other excludes are
+# last seven days. We keep it enabled and exclude only @geoman-io, because we
+# intentionally track the current Geoman release. Every other dependency is
+# resolved to a cooldown-compliant (at least seven days old) version, so no other excludes are
 # needed — the lockfile itself satisfies the policy.
 minimumReleaseAgeExclude:
   - '@geoman-io/*'
